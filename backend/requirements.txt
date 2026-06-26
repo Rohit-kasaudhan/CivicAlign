@@ -1,0 +1,13 @@
+flask
+flask-sqlalchemy
+flask-jwt-extended
+flask-cors
+flask-migrate
+google-generativeai
+python-dotenv
+werkzeug
+reportlab
+pillow
+requests
+gunicorn
+psycopg2-binary
