@@ -15,7 +15,9 @@ import AIInsightsPanel from '../../components/complaint/AIInsightsPanel';
 import { formatDate } from '../../utils/helpers';
 import { formatRelativeTimeLocalized, translateCategory, translatePriority } from '../../utils/i18n';
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace('/api', '')
+  : 'http://localhost:5000';
 
 const ComplaintDetail = () => {
   const { id }      = useParams();
