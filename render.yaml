@@ -37,7 +37,7 @@ services:
     name: civicalign-frontend
     runtime: static
     buildCommand: npm run build
-    publishDir: dist
+    staticPublishDir: dist
     rootDir: frontend
     routes:
       # Rewrite all path requests to index.html to allow React Router client routing (SPA)
