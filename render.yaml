@@ -33,11 +33,10 @@ services:
         sync: false
 
   # ── 2. Vite React Frontend Static Site ─────────────────────────────────────
-  - type: web
+  - type: static
     name: civicalign-frontend
-    runtime: static
     buildCommand: npm run build
-    staticPublishDir: dist
+    publishDir: dist
     rootDir: frontend
     routes:
       # Rewrite all path requests to index.html to allow React Router client routing (SPA)
