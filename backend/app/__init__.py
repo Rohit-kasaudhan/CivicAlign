@@ -21,7 +21,7 @@ def create_app(config_name=None):
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
     
     # Initialize extensions
-    cors.init_app(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+    cors.init_app(app, resources={r"/*": {"origins": "*"}})
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
