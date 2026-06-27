@@ -31,13 +31,13 @@ with app.app_context():
             is_verified=True,
             is_active=True,
         )
-        admin.set_password('Admin@1234')
+        admin.set_password('Admin@123')
         db.session.add(admin)
         db.session.commit()
         print('Admin user created successfully.')
 
     print('\n--- Admin Login Credentials ---')
     print('Email   : admin@civicalign.com')
-    print('Password: Admin@1234')
+    print('Password: Admin@123')
     print('URL     : http://localhost:5173/login')
     print('-------------------------------')
