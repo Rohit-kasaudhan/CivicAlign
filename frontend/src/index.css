@@ -1,10 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Additional design theme/globals if needed */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  background-color: #F4F6FA;
+  color: #1A1A2E;
+}
+
+body {
+  margin: 0;
+  background-color: #F4F6FA;
+  color: #1A1A2E;
+}
+
+/* Page transitions */
+.page-fade {
+  animation: fadeIn 200ms ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Skeleton animation */
+.skeleton-pulse {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: loading-pulse 1.5s infinite;
+}
+
+@keyframes loading-pulse {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Custom Input Styling */
+.gov-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background-color: #ffffff;
+  border: 1px solid #DDE3ED;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #1A1A2E;
+  transition: all 150ms ease;
+}
+.gov-input:focus {
+  outline: none;
+  border-color: #1A3A6B;
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.15);
+}
+
+/* Custom Button Styling */
+.gov-btn-primary {
+  padding: 0.625rem 1.25rem;
+  background-color: #1A3A6B;
+  color: #ffffff;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.gov-btn-primary:hover {
+  background-color: #132c52;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.gov-btn-primary:active {
+  background-color: #0c1c34;
+}
+.gov-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.gov-btn-secondary {
+  padding: 0.625rem 1.25rem;
+  background-color: #ffffff;
+  color: #5A6A7A;
+  border: 1px solid #DDE3ED;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.gov-btn-secondary:hover {
+  background-color: #F4F6FA;
+  color: #1A1A2E;
+}
+.gov-btn-secondary:active {
+  background-color: #E2E8F0;
+}
+
+.gov-btn-teal {
+  padding: 0.625rem 1.25rem;
+  background-color: #0F7B6C;
+  color: #ffffff;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.gov-btn-teal:hover {
+  background-color: #0b675b;
+}
+.gov-btn-teal:active {
+  background-color: #084c43;
+}
+
+.gov-btn-outline-blue {
+  padding: 0.625rem 1.25rem;
+  background-color: transparent;
+  color: #1A3A6B;
+  border: 1px solid #1A3A6B;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.gov-btn-outline-blue:hover {
+  background-color: #1A3A6B;
+  color: #ffffff;
+}
+
+/* Cards elevation and style */
+.gov-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid #DDE3ED;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: all 200ms ease;
+  padding: 1.25rem;
+}
+.gov-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

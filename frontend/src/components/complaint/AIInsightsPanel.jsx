@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
 import { translatePriority } from '../../utils/i18n';
+import AgentTraceModal from './AgentTraceModal';
 
 const ScoreBar = ({ label, value, color = 'bg-[#1e40af]' }) => (
   <div>
@@ -50,6 +51,7 @@ const PRIORITY_COLORS = {
 
 const AIInsightsPanel = ({ complaint }) => {
   const { t } = useLanguage();
+  const [isTraceOpen, setIsTraceOpen] = useState(false);
 
   if (!complaint?.ai_summary) {
     return (
@@ -74,9 +76,17 @@ const AIInsightsPanel = ({ complaint }) => {
 
   return (
     <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-5">
-      <h3 className="font-bold text-slate-800 flex items-center gap-2">
-        🤖 {t('ai_analysis')}
-      </h3>
+      <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 className="font-extrabold text-slate-800 flex items-center gap-2 font-poppins text-sm uppercase tracking-wider">
+          🤖 {t('ai_analysis')}
+        </h3>
+        <button
+          onClick={() => setIsTraceOpen(true)}
+          className="text-xs font-bold text-[#1A3A6B] hover:underline flex items-center gap-1 border border-[#1A3A6B]/25 px-2.5 py-1.5 rounded-lg bg-[#1A3A6B]/5 hover:bg-[#1A3A6B]/10 transition-colors"
+        >
+          View Reasoning Trace →
+        </button>
+      </div>
 
       {/* Scores */}
       <div className="space-y-3">
@@ -149,6 +159,12 @@ const AIInsightsPanel = ({ complaint }) => {
         <ActionList title={`📋 ${t('short_term_actions')}`} items={shortTermActions} />
         <ActionList title={`🏗️ ${t('long_term_actions')}`}  items={longTermActions} />
       </div>
+
+      <AgentTraceModal
+        complaint={complaint}
+        isOpen={isTraceOpen}
+        onClose={() => setIsTraceOpen(false)}
+      />
     </div>
   );
 };

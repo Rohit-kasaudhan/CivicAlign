@@ -41,14 +41,14 @@ const StepDot = ({ idx, current, label }) => {
   const active = idx === current;
   return (
     <div className="flex flex-col items-center">
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-2 transition-colors
-        ${done   ? 'bg-[#1e40af] border-[#1e40af] text-white' : ''}
-        ${active ? 'bg-white border-[#1e40af] text-[#1e40af]' : ''}
-        ${!done && !active ? 'bg-white border-gray-300 text-gray-400' : ''}
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-2 transition-all duration-250 font-poppins
+        ${done   ? 'bg-[#1A3A6B] border-[#1A3A6B] text-white' : ''}
+        ${active ? 'bg-white border-[#1A3A6B] text-[#1A3A6B] shadow-sm' : ''}
+        ${!done && !active ? 'bg-white border-[#DDE3ED] text-gray-400' : ''}
       `}>
-        {done ? <CheckCircle2 size={16} /> : idx + 1}
+        {done ? <CheckCircle2 size={16} className="text-white" /> : idx + 1}
       </div>
-      <span className={`text-xs mt-1 font-medium hidden sm:block ${active ? 'text-[#1e40af]' : 'text-gray-400'}`}>
+      <span className={`text-xs mt-1.5 font-bold uppercase tracking-wider hidden sm:block ${active ? 'text-[#1A3A6B]' : 'text-gray-400'}`}>
         {label}
       </span>
     </div>
@@ -460,79 +460,89 @@ const ReportComplaint = () => {
       <h1 className="text-2xl font-bold text-gray-800">{t('report_civic_issue')}</h1>
 
       {/* Step indicator */}
-      <div className="flex items-center justify-between bg-white rounded-xl border border-gray-200 px-6 py-4">
+      <div className="flex items-center justify-between bg-white rounded-xl border border-[#DDE3ED] px-6 py-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
         {stepLabels.map((label, idx) => (
           <React.Fragment key={idx}>
             <StepDot idx={idx} current={step} label={label} />
             {idx < stepLabels.length - 1 && (
-              <div className={`flex-1 h-0.5 mx-1 ${idx < step ? 'bg-[#1e40af]' : 'bg-gray-200'}`} />
+              <div className={`flex-1 h-0.5 mx-2 transition-colors duration-300 ${idx < step ? 'bg-[#1A3A6B]' : 'bg-gray-200'}`} />
             )}
           </React.Fragment>
         ))}
       </div>
 
       {/* Step panels */}
-      <div className="bg-white rounded-xl shadow border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.05)] border border-[#DDE3ED] p-8">
 
         {/* STEP 0 — Basic Info */}
         {step === 0 && (
-          <div className="space-y-4">
-            <h2 className="font-bold text-gray-800 text-lg">{t('form_step1')}</h2>
+          <div className="space-y-5">
+            <h2 className="font-extrabold text-gray-800 text-lg font-poppins border-b border-gray-100 pb-2">{t('form_step1')}</h2>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('issue_title')} <span className="text-red-500">*</span></label>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{t('issue_title')} <span className="text-[#C0392B]">*</span></label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={t('title_placeholder')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af]"
+                className="gov-input"
                 minLength={10}
               />
               <button
                 type="button"
                 onClick={() => toggleListening('title')}
-                className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-gray-800 transition-colors"
+                className={`mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                  isListeningTitle
+                    ? 'border-[#C0392B] text-[#C0392B] bg-red-50/50 animate-pulse'
+                    : 'border-[#DDE3ED] text-[#5A6A7A] hover:bg-gray-50 bg-white'
+                }`}
               >
-                <span>{isListeningTitle ? '🔴 Listening...' : '🎤 Start Recording'}</span>
+                <Mic size={12} className={isListeningTitle ? 'text-[#C0392B]' : 'text-gray-400'} />
+                <span>{isListeningTitle ? 'Listening...' : 'Voice Input'}</span>
               </button>
               {speechErrorTitle && (
-                <p className="text-xs text-red-500 mt-1">{speechErrorTitle}</p>
+                <p className="text-xs text-[#C0392B] mt-1.5 font-medium">{speechErrorTitle}</p>
               )}
-              <p className="text-xs text-gray-400 mt-1">{title.length}/200 — {t('min_chars').replace('{count}', 10)}</p>
+              <p className="text-xs text-gray-400 mt-1.5">{title.length}/200 — {t('min_chars').replace('{count}', 10)}</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('category')} <span className="text-red-500">*</span></label>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{t('category')} <span className="text-[#C0392B]">*</span></label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af] bg-white"
+                className="gov-input bg-white"
               >
                 {CATEGORIES.map((c) => <option key={c} value={c}>{translateCategory(t, c)}</option>)}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('form_desc')} <span className="text-red-500">*</span></label>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{t('form_desc')} <span className="text-[#C0392B]">*</span></label>
               <textarea
                 rows={5}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={t('desc_placeholder')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af] resize-none"
+                className="gov-input resize-none"
                 minLength={20}
               />
               <button
                 type="button"
                 onClick={() => toggleListening('description')}
-                className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-gray-800 transition-colors"
+                className={`mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                  isListeningDesc
+                    ? 'border-[#C0392B] text-[#C0392B] bg-red-50/50 animate-pulse'
+                    : 'border-[#DDE3ED] text-[#5A6A7A] hover:bg-gray-50 bg-white'
+                }`}
               >
-                <span>{isListeningDesc ? '🔴 Listening...' : '🎤 Start Recording'}</span>
+                <Mic size={12} className={isListeningDesc ? 'text-[#C0392B]' : 'text-gray-400'} />
+                <span>{isListeningDesc ? 'Listening...' : 'Voice Input'}</span>
               </button>
               {speechErrorDesc && (
-                <p className="text-xs text-red-500 mt-1">{speechErrorDesc}</p>
+                <p className="text-xs text-[#C0392B] mt-1.5 font-medium">{speechErrorDesc}</p>
               )}
-              <p className="text-xs text-gray-400 mt-1">{description.length} chars — {t('min_chars').replace('{count}', 20)}</p>
+              <p className="text-xs text-gray-400 mt-1.5">{description.length} chars — {t('min_chars').replace('{count}', 20)}</p>
             </div>
           </div>
         )}
@@ -540,19 +550,19 @@ const ReportComplaint = () => {
         {/* STEP 1 — Evidence */}
         {step === 1 && (
           <div className="space-y-4">
-            <h2 className="font-bold text-gray-800 text-lg">{t('form_step2')}</h2>
-            <p className="text-sm text-gray-500">{t('upload_help')}</p>
+            <h2 className="font-extrabold text-gray-800 text-lg font-poppins border-b border-gray-100 pb-2">{t('form_step2')}</h2>
+            <p className="text-xs font-semibold text-[#5A6A7A]">{t('upload_help')}</p>
 
             <div
               onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={onDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors
-                ${dragging ? 'border-[#1e40af] bg-blue-50' : 'border-gray-300 hover:border-[#1e40af] hover:bg-gray-50'}`}
+              className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-150
+                ${dragging ? 'border-[#1A3A6B] bg-[#1A3A6B]/5' : 'border-[#DDE3ED] hover:border-[#1A3A6B] hover:bg-gray-50'}`}
             >
-              <Upload size={32} className="mx-auto text-gray-400 mb-2" />
-              <p className="text-sm font-medium text-gray-600">{t('upload_drop')}</p>
+              <Upload size={32} className="mx-auto text-gray-400 mb-2.5" />
+              <p className="text-sm font-bold text-gray-700">{t('upload_drop')}</p>
               <p className="text-xs text-gray-400 mt-1">{t('upload_types')}</p>
               <input
                 ref={fileInputRef}
@@ -565,29 +575,29 @@ const ReportComplaint = () => {
             </div>
 
             {(images.length > 0 || videos.length > 0) && (
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-4 bg-gray-50 p-3 rounded-xl border border-gray-250">
                 {images.map((img, i) => (
-                  <div key={i} className="relative group">
+                  <div key={i} className="relative group rounded-lg overflow-hidden border border-gray-200 shadow-sm h-20 bg-white">
                     <img
                       src={URL.createObjectURL(img)}
                       alt=""
-                      className="w-full h-20 object-cover rounded-lg border border-gray-200"
+                      className="w-full h-full object-cover"
                     />
                     <button
-                      onClick={() => setImages((p) => p.filter((_, j) => j !== i))}
-                      className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => { e.stopPropagation(); setImages((p) => p.filter((_, j) => j !== i)); }}
+                      className="absolute top-1 right-1 bg-black/60 hover:bg-black text-white rounded-full p-1 transition-all"
                     >
                       <X size={10} />
                     </button>
                   </div>
                 ))}
                 {videos.map((vid, i) => (
-                  <div key={i} className="relative group bg-gray-900 rounded-lg h-20 flex items-center justify-center border border-gray-200">
+                  <div key={i} className="relative group bg-gray-900 rounded-lg h-20 flex items-center justify-center border border-gray-200 shadow-sm">
                     <Image size={20} className="text-gray-400" />
-                    <span className="text-xs text-gray-300 absolute bottom-1 left-1 right-1 truncate px-1">{vid.name}</span>
+                    <span className="text-[10px] text-gray-300 absolute bottom-1 left-1 right-1 truncate px-1 text-center font-semibold">{vid.name}</span>
                     <button
-                      onClick={() => setVideos((p) => p.filter((_, j) => j !== i))}
-                      className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => { e.stopPropagation(); setVideos((p) => p.filter((_, j) => j !== i)); }}
+                      className="absolute top-1 right-1 bg-black/60 hover:bg-black text-white rounded-full p-1 transition-all"
                     >
                       <X size={10} />
                     </button>
@@ -601,21 +611,21 @@ const ReportComplaint = () => {
         {/* STEP 2 — Location */}
         {step === 2 && (
           <div className="space-y-4">
-            <h2 className="font-bold text-gray-800 text-lg">{t('pin_location')} <span className="text-red-500">*</span></h2>
+            <h2 className="font-extrabold text-gray-800 text-lg font-poppins border-b border-gray-100 pb-2">{t('pin_location')} <span className="text-[#C0392B]">*</span></h2>
 
             <div className="flex gap-2">
               <button
                 onClick={getGPS}
                 disabled={gpsLoading}
-                className="flex items-center gap-2 px-4 py-2 bg-[#1e40af] text-white text-sm rounded-lg font-semibold hover:bg-blue-800 disabled:opacity-60"
+                className="flex items-center gap-2 px-4 py-2 bg-[#1A3A6B] hover:bg-[#132c52] text-white text-xs font-bold rounded-lg transition-colors disabled:opacity-60 shadow-sm"
               >
                 {gpsLoading ? <Loader2 size={14} className="animate-spin" /> : <MapPin size={14} />}
                 {t('form_use_location')}
               </button>
-              <p className="text-xs text-gray-400 self-center">{t('click_map')}</p>
+              <p className="text-xs text-gray-400 self-center font-semibold">{t('click_map')}</p>
             </div>
 
-            <div className="h-64 rounded-xl overflow-hidden border border-gray-200">
+            <div className="h-64 rounded-xl overflow-hidden border border-[#DDE3ED]">
               <MapContainer
                 center={coords ? [coords.lat, coords.lng] : [20.5937, 78.9629]}
                 zoom={coords ? 15 : 5}
@@ -649,90 +659,110 @@ const ReportComplaint = () => {
             </div>
 
             {coords && (
-              <p className="text-xs text-green-700 font-medium">
+              <p className="text-xs text-[#0F7B6C] font-bold">
                 📍 {t('selected_location')}: {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
               </p>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-150">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Country (optional)</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Country (optional)</label>
                 <input
                   type="text"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   placeholder="Country name"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af]"
+                  className="gov-input"
                 />
                 <button
                   type="button"
                   onClick={() => toggleListening('country')}
-                  className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-gray-800 transition-colors"
+                  className={`mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                    isListeningCountry
+                      ? 'border-[#C0392B] text-[#C0392B] bg-red-50/50 animate-pulse'
+                      : 'border-[#DDE3ED] text-[#5A6A7A] hover:bg-gray-50 bg-white'
+                  }`}
                 >
-                  <span>{isListeningCountry ? '🔴 Listening...' : '🎤 Start Recording'}</span>
+                  <Mic size={12} className={isListeningCountry ? 'text-[#C0392B]' : 'text-gray-400'} />
+                  <span>{isListeningCountry ? 'Listening...' : 'Voice Input'}</span>
                 </button>
                 {speechErrorCountry && (
-                  <p className="text-xs text-red-500 mt-1">{speechErrorCountry}</p>
+                  <p className="text-xs text-[#C0392B] mt-1.5 font-medium">{speechErrorCountry}</p>
                 )}
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">State (optional)</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">State (optional)</label>
                 <input
                   type="text"
                   value={stateVal}
                   onChange={(e) => setStateVal(e.target.value)}
                   placeholder="State name"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af]"
+                  className="gov-input"
                 />
                 <button
                   type="button"
                   onClick={() => toggleListening('state')}
-                  className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-gray-800 transition-colors"
+                  className={`mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                    isListeningState
+                      ? 'border-[#C0392B] text-[#C0392B] bg-red-50/50 animate-pulse'
+                      : 'border-[#DDE3ED] text-[#5A6A7A] hover:bg-gray-50 bg-white'
+                  }`}
                 >
-                  <span>{isListeningState ? '🔴 Listening...' : '🎤 Start Recording'}</span>
+                  <Mic size={12} className={isListeningState ? 'text-[#C0392B]' : 'text-gray-400'} />
+                  <span>{isListeningState ? 'Listening...' : 'Voice Input'}</span>
                 </button>
                 {speechErrorState && (
-                  <p className="text-xs text-red-500 mt-1">{speechErrorState}</p>
+                  <p className="text-xs text-[#C0392B] mt-1.5 font-medium">{speechErrorState}</p>
                 )}
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">{t('address_optional')}</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{t('address_optional')}</label>
                 <input
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder={t('address_placeholder')}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af]"
+                  className="gov-input"
                 />
                 <button
                   type="button"
                   onClick={() => toggleListening('address')}
-                  className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-gray-800 transition-colors"
+                  className={`mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                    isListeningAddress
+                      ? 'border-[#C0392B] text-[#C0392B] bg-red-50/50 animate-pulse'
+                      : 'border-[#DDE3ED] text-[#5A6A7A] hover:bg-gray-50 bg-white'
+                  }`}
                 >
-                  <span>{isListeningAddress ? '🔴 Listening...' : '🎤 Start Recording'}</span>
+                  <Mic size={12} className={isListeningAddress ? 'text-[#C0392B]' : 'text-gray-400'} />
+                  <span>{isListeningAddress ? 'Listening...' : 'Voice Input'}</span>
                 </button>
                 {speechErrorAddress && (
-                  <p className="text-xs text-red-500 mt-1">{speechErrorAddress}</p>
+                  <p className="text-xs text-[#C0392B] mt-1.5 font-medium">{speechErrorAddress}</p>
                 )}
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">{t('city_optional')}</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{t('city_optional')}</label>
                 <input
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder={t('city_placeholder')}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e40af]"
+                  className="gov-input"
                 />
                 <button
                   type="button"
                   onClick={() => toggleListening('city')}
-                  className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-gray-800 transition-colors"
+                  className={`mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                    isListeningCity
+                      ? 'border-[#C0392B] text-[#C0392B] bg-red-50/50 animate-pulse'
+                      : 'border-[#DDE3ED] text-[#5A6A7A] hover:bg-gray-50 bg-white'
+                  }`}
                 >
-                  <span>{isListeningCity ? '🔴 Listening...' : '🎤 Start Recording'}</span>
+                  <Mic size={12} className={isListeningCity ? 'text-[#C0392B]' : 'text-gray-400'} />
+                  <span>{isListeningCity ? 'Listening...' : 'Voice Input'}</span>
                 </button>
                 {speechErrorCity && (
-                  <p className="text-xs text-red-500 mt-1">{speechErrorCity}</p>
+                  <p className="text-xs text-[#C0392B] mt-1.5 font-medium">{speechErrorCity}</p>
                 )}
               </div>
             </div>
@@ -742,37 +772,38 @@ const ReportComplaint = () => {
         {/* STEP 3 — Review */}
         {step === 3 && (
           <div className="space-y-4">
-            <h2 className="font-bold text-gray-800 text-lg">{t('review_submit')}</h2>
-            <div className="bg-gray-50 rounded-xl p-4 space-y-3 text-sm">
-              <div className="flex gap-2"><span className="text-gray-400 w-24 shrink-0">{t('title')}</span><span className="font-medium text-gray-800">{title}</span></div>
-              <div className="flex gap-2"><span className="text-gray-400 w-24 shrink-0">{t('category')}</span><span className="font-medium text-gray-800">{translateCategory(t, category)}</span></div>
-              <div className="flex gap-2"><span className="text-gray-400 w-24 shrink-0">{t('form_desc')}</span><span className="text-gray-700 leading-relaxed">{description}</span></div>
-              <div className="flex gap-2">
-                <span className="text-gray-400 w-24 shrink-0">{t('evidence')}</span>
-                <span className="text-gray-700">
-                  {t('images_count').replace('{count}', images.length)}, {t('videos_count').replace('{count}', videos.length)}
+            <h2 className="font-extrabold text-gray-800 text-lg font-poppins border-b border-gray-100 pb-2">{t('review_submit')}</h2>
+            <div className="bg-gray-50 rounded-xl p-5 space-y-4 text-xs border border-gray-150">
+              <div className="flex items-start gap-2"><span className="text-[#5A6A7A] w-24 shrink-0 font-bold uppercase tracking-wider">{t('title')}</span><span className="font-bold text-gray-800">{title}</span></div>
+              <div className="flex items-start gap-2"><span className="text-[#5A6A7A] w-24 shrink-0 font-bold uppercase tracking-wider">{t('category')}</span><span className="font-bold text-gray-800">{translateCategory(t, category)}</span></div>
+              <div className="flex items-start gap-2"><span className="text-[#5A6A7A] w-24 shrink-0 font-bold uppercase tracking-wider">{t('form_desc')}</span><span className="text-gray-700 leading-relaxed font-semibold">{description}</span></div>
+              <div className="flex items-start gap-2">
+                <span className="text-[#5A6A7A] w-24 shrink-0 font-bold uppercase tracking-wider">{t('evidence')}</span>
+                <span className="text-gray-700 font-semibold">
+                  {t('images_count').replace('{count}', images.length)} · {t('videos_count').replace('{count}', videos.length)}
                 </span>
               </div>
-              <div className="flex gap-2"><span className="text-gray-400 w-24 shrink-0">{t('location')}</span>
-                <span className="text-gray-700">
-                  {coords ? `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}` : '—'}
+              <div className="flex items-start gap-2"><span className="text-[#5A6A7A] w-24 shrink-0 font-bold uppercase tracking-wider">{t('location')}</span>
+                <span className="text-gray-700 font-semibold leading-normal">
+                  {coords ? `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}` : '—'}
                   {country ? ` · ${country}` : ''}
                   {stateVal ? ` · ${stateVal}` : ''}
                   {city ? ` · ${city}` : ''}
+                  {address ? ` · ${address}` : ''}
                 </span>
               </div>
             </div>
-            <p className="text-xs text-gray-400">{t('submit_note')}</p>
+            <p className="text-xs text-gray-400 font-semibold leading-relaxed mt-2">{t('submit_note')}</p>
           </div>
         )}
       </div>
 
       {/* Navigation buttons */}
-      <div className="flex justify-between">
+      <div className="flex justify-between pt-2">
         <button
           onClick={() => setStep((s) => s - 1)}
           disabled={step === 0}
-          className="flex items-center gap-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="gov-btn-secondary h-10 px-4"
         >
           <ChevronLeft size={16} /> {t('form_back')}
         </button>
@@ -781,7 +812,7 @@ const ReportComplaint = () => {
           <button
             onClick={() => setStep((s) => s + 1)}
             disabled={!canProceed()}
-            className="flex items-center gap-1 px-5 py-2 bg-[#1e40af] text-white rounded-lg text-sm font-semibold hover:bg-blue-800 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="gov-btn-primary h-10 px-5"
           >
             {t('form_next')} <ChevronRight size={16} />
           </button>
@@ -789,7 +820,7 @@ const ReportComplaint = () => {
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 disabled:opacity-60"
+            className="gov-btn-teal h-10 px-6 font-bold shadow-md"
           >
             {submitting ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
             {submitting ? t('submitting') : t('submit_report')}

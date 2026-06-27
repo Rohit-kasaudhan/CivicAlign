@@ -31,20 +31,18 @@ const TOP_CITIZENS = [
 ];
 
 const FEATURES = [
-  { icon: '📸', title: 'AI-Powered Evidence Analysis', desc: 'Upload photos and our AI instantly verifies the issue, scores the evidence, and extracts key facts.' },
-  { icon: '📍', title: 'Geo-Location Mapping', desc: 'Pin issues on an interactive live map so authorities can locate and route them instantly.' },
-  { icon: '🤝', title: 'Community Verification', desc: 'Neighbors confirm issues to boost credibility scores and fast-track resolution.' },
-  { icon: '⚡', title: 'Smart Prioritization', desc: 'AI scores each complaint on impact, urgency, and citizens affected to surface what matters most.' },
-  { icon: '📊', title: 'Development Initiatives', desc: 'Clustered complaints automatically become structured city development projects.' },
-  { icon: '🏆', title: 'Civic Gamification', desc: 'Earn points and badges for every verified report, verification, and community contribution.' },
+  { icon: '📷', title: 'Report with Photos & Videos', desc: "Attach real visual evidence to your complaint so authorities can see exactly what's wrong — no more 'we need to investigate' delays." },
+  { icon: '🗺️', title: 'See Issues on a Live Map', desc: "View all reported problems in your area on an interactive map. Know what your neighbors are dealing with too." },
+  { icon: '👥', title: 'Verify & Support Others', desc: "Confirm issues reported by your neighbors to boost their priority. The more citizens verify, the faster it gets fixed." },
+  { icon: '📊', title: 'Track Your Complaint Live', desc: "See exactly where your complaint stands — submitted, seen by admin, in progress, or resolved. No more wondering if anyone cared." },
+  { icon: '🏆', title: 'Earn Civic Points', desc: "Every report you make earns Civic Points. Rise through the leaderboard. Get recognized as a Community Hero in your community." },
+  { icon: '⚡', title: 'AI Turns Complaints into Plans', desc: "Our AI doesn't just store your complaint — it analyzes it, scores its impact, and helps authorities prioritize what matters most." }
 ];
 
 const HOW_IT_WORKS = [
-  { num: 1, icon: '📝', title: 'Report',                desc: 'Describe your issue, upload photo or video evidence, and pin the exact location.' },
-  { num: 2, icon: '🤖', title: 'AI Processes',          desc: '5 specialised AI agents verify authenticity, categorise, and assess community impact.' },
-  { num: 3, icon: '👥', title: 'Community Verifies',    desc: 'Nearby citizens upvote and add supporting evidence to strengthen the case.' },
-  { num: 4, icon: '🏗️', title: 'Initiative Created',   desc: 'Related complaints cluster into a structured development project for authorities.' },
-  { num: 5, icon: '✅', title: 'Resolution Tracked',   desc: 'Follow progress from review → approved → in progress → resolved in real time.' },
+  { num: 1, icon: '📝', title: 'Report Your Issue', desc: 'Describe the problem in your area. Add photos, your location, and any details. Takes less than 2 minutes.' },
+  { num: 2, icon: '🤖', title: 'AI Agents Get to Work', desc: '6 specialized AI agents analyze your complaint — categorizing it, assessing impact, grouping similar issues, and generating recommendations.' },
+  { num: 3, icon: '🏛️', title: 'Government Plans & Acts', desc: 'Your complaint becomes part of a ranked development plan. Authorities get an evidence-based roadmap. You get real updates.' }
 ];
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -72,10 +70,6 @@ const Landing = () => {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full translate-x-1/3 translate-y-1/3" />
 
         <div className="relative max-w-4xl mx-auto space-y-6">
-          <div className="inline-block bg-white/10 text-blue-200 text-xs font-semibold px-4 py-1.5 rounded-full mb-2 tracking-wide">
-            Powered by Google Gemini 2.5 Flash
-          </div>
-
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight">
             Civic<span className="text-blue-300">Align</span>
           </h1>
@@ -113,61 +107,69 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ── 2. Features ─────────────────────────────────────────────────── */}
+      {/* ── 3. How CivicAlign Works ─────────────────────────────────────────────── */}
+      <section className="py-24 px-6 md:px-12 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 font-poppins">How CivicAlign Works</h2>
+            <p className="text-[#5A6A7A] mt-2 font-semibold">From complaint to resolution in three simple steps</p>
+          </div>
+          
+          <div className="flex flex-col md:flex-row items-stretch justify-between gap-6 md:gap-4">
+            {HOW_IT_WORKS.map((step, idx) => (
+              <React.Fragment key={step.num}>
+                {/* Step Card */}
+                <div className="flex-1 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between items-center text-center relative">
+                  
+                  {/* Step Number Badge */}
+                  <div className="w-10 h-10 rounded-full bg-[#1e40af] text-white flex items-center justify-center font-bold text-sm shadow-sm mb-4">
+                    {step.num}
+                  </div>
+
+                  <div className="text-4xl mb-3">{step.icon}</div>
+                  
+                  <div className="space-y-2">
+                    <h3 className="font-extrabold text-gray-800 font-poppins text-base">{step.title}</h3>
+                    <p className="text-xs text-[#5A6A7A] leading-relaxed font-semibold">{step.desc}</p>
+                  </div>
+                </div>
+
+                {/* Arrow Connector */}
+                {idx < HOW_IT_WORKS.length - 1 && (
+                  <div className="hidden md:flex items-center justify-center text-gray-300 self-center px-2">
+                    <svg className="w-6 h-6 transform rotate-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. What You Can Do Here ─────────────────────────────────────────── */}
       <section className="py-24 px-6 md:px-12 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Everything Your Community Needs</h2>
-            <p className="text-gray-500 mt-3 max-w-xl mx-auto">
-              A full civic engagement platform built for real-world impact.
-            </p>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 font-poppins">Everything You Need to Make Your Community Better</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map((f) => (
               <div
                 key={f.title}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7 hover:shadow-md hover:-translate-y-0.5 transition-all"
+                className="bg-white rounded-2xl border border-gray-200/80 shadow-sm p-7 hover:shadow-md hover:-translate-y-0.5 transition-all"
               >
                 <div className="text-4xl mb-4">{f.icon}</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{f.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+                <h3 className="text-base font-extrabold text-gray-800 mb-2 font-poppins">{f.title}</h3>
+                <p className="text-sm text-[#5A6A7A] leading-relaxed font-semibold">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── 3. How It Works ─────────────────────────────────────────────── */}
-      <section className="py-24 px-6 md:px-12 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">How It Works</h2>
-            <p className="text-gray-500 mt-3">From report to resolution in five simple steps.</p>
-          </div>
-          <div className="relative">
-            {/* connector line */}
-            <div className="absolute left-8 top-10 bottom-10 w-0.5 bg-blue-100 hidden md:block" />
-            <div className="space-y-8">
-              {HOW_IT_WORKS.map((step) => (
-                <div key={step.num} className="flex gap-6 items-start">
-                  <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-[#1e40af] text-white flex flex-col items-center justify-center text-xl shadow-md z-10">
-                    <span>{step.icon}</span>
-                  </div>
-                  <div className="pt-2">
-                    <div className="text-xs font-bold text-[#1e40af] uppercase tracking-widest mb-1">
-                      Step {step.num}
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900">{step.title}</h3>
-                    <p className="text-sm text-gray-500 mt-1 leading-relaxed max-w-lg">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 4. Community Impact ─────────────────────────────────────────── */}
+      {/* ── 5. Community Impact ─────────────────────────────────────────── */}
       <section className="py-24 px-6 md:px-12 bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Community Impact</h2>
@@ -188,11 +190,11 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ── 5. Leaderboard Preview ──────────────────────────────────────── */}
+      {/* ── 6. Leaderboard Preview ──────────────────────────────────────── */}
       <section className="py-24 px-6 md:px-12 bg-gray-50">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Top Citizens</h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 font-poppins">Top Citizens</h2>
             <p className="text-gray-500 mt-3">The people driving change in their communities.</p>
           </div>
           <div className="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
@@ -226,7 +228,7 @@ const Landing = () => {
           </div>
           <div className="text-center mt-6">
             <Link
-              to="/leaderboard"
+              to="/register"
               className="inline-block bg-[#1e40af] text-white font-semibold py-2.5 px-8 rounded-xl hover:bg-blue-800 transition-colors text-sm"
             >
               View Full Leaderboard
@@ -235,7 +237,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ── 6. Footer ───────────────────────────────────────────────────── */}
+      {/* ── 7. Footer ───────────────────────────────────────────────────── */}
       <footer className="bg-gray-900 text-gray-400 py-14 px-6 md:px-12">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
@@ -257,9 +259,6 @@ const Landing = () => {
           </div>
           <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-600">
             <span>© {new Date().getFullYear()} CivicAlign. All rights reserved.</span>
-            <span className="flex items-center gap-2">
-              ⚡ Powered by <span className="text-gray-400 font-semibold">Google Gemini 2.5 Flash</span>
-            </span>
           </div>
         </div>
       </footer>

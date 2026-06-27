@@ -50,9 +50,9 @@ class Complaint(db.Model):
     long_term_actions = db.Column(db.Text, nullable=True)
 
     # Resolution metadata
-    budget_estimate = db.Column(db.String(100), nullable=True)
-    timeline = db.Column(db.String(100), nullable=True)
-    responsible_department = db.Column(db.String(100), nullable=True)
+    budget_estimate = db.Column(db.Text, nullable=True)
+    timeline = db.Column(db.Text, nullable=True)
+    responsible_department = db.Column(db.Text, nullable=True)
 
     # References
     duplicate_of_id = db.Column(db.Integer, db.ForeignKey('complaints.id'), nullable=True)

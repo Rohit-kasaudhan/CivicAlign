@@ -20,9 +20,12 @@ export const NotificationProvider = ({ children }) => {
 
       // Fire toast for new badge notifications not yet seen
       list.forEach((n) => {
-        if (n.type === 'badge' && !seenRef.current.has(n.id)) {
-          seenRef.current.add(n.id);
-          toast?.badge(n.message || n.title, 6000);
+        if (n.type === 'badge' && !n.is_read && !seenRef.current.has(n.id)) {
+          const isPublicPage = ['/', '/login', '/register', '/forgot-password'].includes(window.location.pathname);
+          if (!isPublicPage) {
+            seenRef.current.add(n.id);
+            toast?.badge(n.message || n.title, 6000);
+          }
         }
       });
 

@@ -122,7 +122,10 @@ def run_pipeline(complaint_id: int, app):
             )
 
         except Exception as e:
-            print(f'[Pipeline] Fatal error for complaint {complaint_id}: {e}')
+            try:
+                print(f'[Pipeline] Fatal error for complaint {complaint_id}: {str(e).encode("ascii", "replace").decode()}')
+            except Exception:
+                pass
             try:
                 # Fallback: mark as under_review so admins can handle it manually
                 complaint.status = 'under_review'

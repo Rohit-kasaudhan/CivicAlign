@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Trophy, Medal, Loader2 } from 'lucide-react';
+import { Loader2, Trophy, Award, TrendingUp } from 'lucide-react';
 import { getLeaderboard } from '../../api/admin';
-import { getBadgeInfo } from '../../utils/helpers';
 
 const BADGE_EMOJI = {
   'Reporter':        '🌱',
@@ -13,19 +12,53 @@ const BADGE_EMOJI = {
 };
 
 const RANK_STYLES = [
-  { bg: 'bg-yellow-50 border-yellow-200', rank: '🥇', num: 'text-yellow-600' },
-  { bg: 'bg-gray-50  border-gray-200',    rank: '🥈', num: 'text-gray-500'   },
-  { bg: 'bg-orange-50 border-orange-200', rank: '🥉', num: 'text-orange-500' },
+  'bg-yellow-50/45 border-l-4 border-l-yellow-400',
+  'bg-gray-50/45 border-l-4 border-l-gray-300',
+  'bg-orange-50/45 border-l-4 border-l-orange-300',
 ];
 
-const AwardCard = ({ emoji, label, name, stat }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-4 text-center shadow-sm">
-    <p className="text-2xl mb-1">{emoji}</p>
-    <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">{label}</p>
-    <p className="font-bold text-gray-800">{name || '—'}</p>
-    {stat && <p className="text-xs text-gray-500 mt-0.5">{stat}</p>}
-  </div>
-);
+const RANK_MEDAL = ['🥇', '🥈', '🥉'];
+
+const PodiumColumn = ({ user, rank, heightClass, bgClass, borderClass, medal, badgeColor }) => {
+  if (!user) return <div className="flex-1 opacity-0" />;
+  return (
+    <div className="flex-1 flex flex-col items-center justify-end min-w-0">
+      <div className="relative mb-2 flex flex-col items-center w-full">
+        {/* Avatar */}
+        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-extrabold shadow-md border-2 ${borderClass} bg-[#1A3A6B]/80 relative`}>
+          {user.full_name?.charAt(0)?.toUpperCase()}
+          <span className="absolute -bottom-1 -right-1 text-sm">{medal}</span>
+        </div>
+        <p className="text-[11px] font-bold text-gray-800 mt-2 truncate w-full text-center font-poppins px-1">
+          {user.full_name}
+        </p>
+        <p className="text-[9px] font-black text-gray-400 uppercase tracking-wider">{user.points?.toLocaleString()} pts</p>
+      </div>
+      
+      {/* Podium Base */}
+      <div className={`w-full ${heightClass} ${bgClass} border-t-2 ${borderClass} rounded-t-xl flex flex-col items-center justify-center p-2 shadow-sm`}>
+        <span className={`text-xl font-black leading-none ${badgeColor}`}>{rank}</span>
+        <span className="text-[8px] font-bold uppercase tracking-wider text-gray-400 mt-1 truncate w-full text-center">
+          {user.current_badge || 'Reporter'}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const Podium = ({ leaders }) => {
+  const second = leaders[1];
+  const first = leaders[0];
+  const third = leaders[2];
+
+  return (
+    <div className="flex items-end gap-3 max-w-md w-full h-56 bg-gray-50/50 p-4 rounded-xl border border-gray-150 shadow-inner">
+      <PodiumColumn user={second} rank="2" heightClass="h-20" bgClass="bg-gray-100/70" borderClass="border-gray-300" medal="🥈" badgeColor="text-gray-500" />
+      <PodiumColumn user={first} rank="1" heightClass="h-28" bgClass="bg-yellow-50/70" borderClass="border-yellow-400" medal="🥇" badgeColor="text-yellow-600" />
+      <PodiumColumn user={third} rank="3" heightClass="h-16" bgClass="bg-orange-50/70" borderClass="border-orange-300" medal="🥉" badgeColor="text-orange-600" />
+    </div>
+  );
+};
 
 const AdminLeaderboard = () => {
   const [data, setData]     = useState(null);
@@ -39,8 +72,9 @@ const AdminLeaderboard = () => {
   }, []);
 
   if (loading) return (
-    <div className="flex items-center justify-center h-64 text-gray-400">
-      <Loader2 className="animate-spin mr-2" size={18} /> Loading leaderboard…
+    <div className="flex flex-col items-center justify-center h-64 text-gray-400 gap-3">
+      <Loader2 className="animate-spin text-[#1A3A6B]" size={24} />
+      <span className="text-sm font-semibold">Loading leaderboard data…</span>
     </div>
   );
 
@@ -48,70 +82,105 @@ const AdminLeaderboard = () => {
   const awards  = data?.monthly_awards || {};
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-fade">
       <div>
-        <h1 className="text-xl font-bold text-gray-800">Leaderboard</h1>
-        <p className="text-xs text-gray-500 mt-0.5">Top civic contributors ranked by points</p>
+        <h1 className="text-2xl font-extrabold text-gray-800 font-poppins">Leaderboard</h1>
+        <p className="text-xs text-gray-500 mt-0.5">Top civic contributors ranked by community activity points</p>
       </div>
 
-      {/* Monthly awards */}
-      <div>
-        <h2 className="text-sm font-bold text-gray-700 mb-3">Monthly Awards</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <AwardCard emoji="🥇" label="Best Reporter" name={awards.best_reporter?.name}
-            stat={awards.best_reporter ? `${awards.best_reporter.count} reports this month` : null} />
-          <AwardCard emoji="🤝" label="Community Champion" name={awards.community_champ?.name}
-            stat={awards.community_champ ? `${awards.community_champ.count} verifications` : null} />
-          <AwardCard emoji="⚡" label="Impact Leader" name={awards.impact_leader?.name}
-            stat={awards.impact_leader ? `${Math.round(awards.impact_leader.score)} total impact score` : null} />
+      {/* Podium Block */}
+      <div className="bg-white border border-[#DDE3ED] p-5 rounded-xl shadow-sm">
+        <h3 className="font-extrabold text-sm text-gray-800 font-poppins border-b border-gray-100 pb-2 mb-3">Top Contributors Podium</h3>
+        <div className="flex justify-center">
+          <Podium leaders={leaders} />
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-100 text-xs text-gray-500 font-semibold uppercase">
-              {['Rank','Citizen','Badge','Points','Submitted','Resolved'].map((h) => (
-                <th key={h} className="px-4 py-3 text-left">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {leaders.length === 0 ? (
-              <tr><td colSpan={6} className="px-4 py-10 text-center text-gray-400">No data yet</td></tr>
-            ) : leaders.map((u) => {
-              const style = RANK_STYLES[u.rank - 1];
-              return (
-                <tr key={u.id}
-                  className={`border-b border-gray-50 transition-colors ${style ? style.bg + ' border' : 'hover:bg-gray-50'}`}
-                >
-                  <td className="px-4 py-3 font-bold text-sm">
-                    {style ? <span className="text-lg">{style.rank}</span> : <span className="text-gray-500">#{u.rank}</span>}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-[#1e40af] flex items-center justify-center text-white text-xs font-bold shrink-0">
-                        {u.full_name?.charAt(0)?.toUpperCase() || '?'}
+      {/* Monthly Awards Grid */}
+      <div className="bg-white border border-[#DDE3ED] p-5 rounded-xl shadow-sm">
+        <h3 className="font-extrabold text-sm text-gray-800 font-poppins border-b border-gray-100 pb-2 mb-4 flex items-center gap-1.5">
+          <Award size={16} className="text-[#1A3A6B]" /> Monthly Honors
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-gray-50/50 rounded-xl border border-gray-150 p-4 text-center hover:shadow-sm transition-shadow">
+            <span className="text-2xl">🥇</span>
+            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">Best Reporter</p>
+            <p className="font-extrabold text-gray-800 mt-1 font-poppins text-sm">{awards.best_reporter?.name || '—'}</p>
+            {awards.best_reporter && <p className="text-[10px] text-[#0F7B6C] font-semibold mt-0.5">{awards.best_reporter.count} reports</p>}
+          </div>
+
+          <div className="bg-gray-50/50 rounded-xl border border-gray-150 p-4 text-center hover:shadow-sm transition-shadow">
+            <span className="text-2xl">🤝</span>
+            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">Community Champion</p>
+            <p className="font-extrabold text-gray-800 mt-1 font-poppins text-sm">{awards.community_champ?.name || '—'}</p>
+            {awards.community_champ && <p className="text-[10px] text-[#0F7B6C] font-semibold mt-0.5">{awards.community_champ.count} verifications</p>}
+          </div>
+
+          <div className="bg-gray-50/50 rounded-xl border border-gray-150 p-4 text-center hover:shadow-sm transition-shadow">
+            <span className="text-2xl">⚡</span>
+            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1.5">Impact Leader</p>
+            <p className="font-extrabold text-gray-800 mt-1 font-poppins text-sm">{awards.impact_leader?.name || '—'}</p>
+            {awards.impact_leader && <p className="text-[10px] text-[#0F7B6C] font-semibold mt-0.5">{Math.round(awards.impact_leader.score)} total impact</p>}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Leaderboard Table */}
+      <div className="bg-white rounded-xl border border-[#DDE3ED] shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-150">
+          <h3 className="font-extrabold text-sm text-gray-800 font-poppins">Citizen Rankings</h3>
+          <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">Global standings sorted by points earned</p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-150 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                <th className="px-5 py-3 text-left w-20">Rank</th>
+                <th className="px-5 py-3 text-left">Citizen</th>
+                <th className="px-5 py-3 text-left">Badge</th>
+                <th className="px-5 py-3 text-left">Points</th>
+                <th className="px-5 py-3 text-left">Submitted</th>
+                <th className="px-5 py-3 text-left">Resolved</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {leaders.map((u) => {
+                const topRankClass = RANK_STYLES[u.rank - 1] || '';
+                return (
+                  <tr
+                    key={u.id}
+                    className={`transition-colors odd:bg-white even:bg-gray-50/20 hover:bg-gray-50/40 ${topRankClass}`}
+                  >
+                    <td className="px-5 py-3.5 font-bold">
+                      {RANK_MEDAL[u.rank - 1]
+                        ? <span className="text-lg">{RANK_MEDAL[u.rank - 1]}</span>
+                        : <span className="text-gray-400 font-mono">#{u.rank}</span>
+                      }
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-[#5A6A7A] flex items-center justify-center text-white text-xs font-bold shrink-0">
+                          {u.full_name?.charAt(0)?.toUpperCase() || '?'}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-800">{u.full_name}</p>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{u.city || 'Unknown City'}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-semibold text-gray-800 text-sm">{u.full_name}</p>
-                        <p className="text-xs text-gray-400">{u.city || 'Unknown city'}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="text-sm">{BADGE_EMOJI[u.current_badge] || '🌱'}</span>
-                    <span className="text-xs text-gray-600 ml-1">{u.current_badge}</span>
-                  </td>
-                  <td className="px-4 py-3 font-black text-[#1e40af]">{(u.points || 0).toLocaleString()}</td>
-                  <td className="px-4 py-3 text-gray-600 font-medium">{u.complaints_count || 0}</td>
-                  <td className="px-4 py-3 text-green-600 font-medium">{u.resolved_count || 0}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    </td>
+                    <td className="px-5 py-3.5 whitespace-nowrap">
+                      <span className="text-base">{BADGE_EMOJI[u.current_badge] || '🌱'}</span>
+                      <span className="text-xs font-semibold text-gray-600 ml-1.5">{u.current_badge}</span>
+                    </td>
+                    <td className="px-5 py-3.5 font-extrabold text-[#1A3A6B]">{(u.points || 0).toLocaleString()}</td>
+                    <td className="px-5 py-3.5 text-[#5A6A7A] font-semibold text-xs font-mono">{u.complaints_count || 0}</td>
+                    <td className="px-5 py-3.5 text-[#0F7B6C] font-semibold text-xs font-mono">{u.resolved_count || 0}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

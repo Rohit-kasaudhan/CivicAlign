@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { forgotPassword, resetPassword } from '../../api/auth';
-
-const inputClass =
-  'block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-civic-blue focus:border-transparent';
+import { ShieldCheck, Loader2 } from 'lucide-react';
 
 const ForgotPassword = () => {
   const [step, setStep] = useState('request'); // 'request' | 'reset' | 'done'
@@ -51,105 +49,111 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow border border-gray-200 space-y-6">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">Reset Password</h2>
+    <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA] py-12 px-4 sm:px-6 lg:px-8 page-fade">
+      <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-gray-100 space-y-6">
+        
+        {/* Logo */}
+        <div className="text-center">
+          <Link to="/" className="inline-flex items-center gap-2 mb-2">
+            <ShieldCheck size={24} className="text-[#1A3A6B]" />
+            <span className="text-xl font-extrabold text-[#1A1A2E] font-poppins">CivicAlign</span>
+          </Link>
+          <h2 className="text-xl font-extrabold text-gray-900 font-poppins mt-2">Reset Your Password</h2>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-md">
+          <div className="bg-red-50 border border-red-200 text-[#C0392B] text-sm p-3.5 rounded-xl font-medium">
             {error}
           </div>
         )}
 
         {step === 'request' && (
           <form onSubmit={handleRequest} className="space-y-4">
-            <p className="text-sm text-gray-600">
-              Enter your email address and we'll send you an OTP to recover your password.
+            <p className="text-xs text-[#5A6A7A] leading-relaxed">
+              Enter your registered email address below, and we will transmit a 6-digit verification OTP code to reset your credentials.
             </p>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">Email Address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={inputClass}
+                className="gov-input"
                 placeholder="you@example.com"
               />
             </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 px-4 text-sm font-semibold rounded-md text-white bg-civic-blue hover:bg-blue-800 disabled:opacity-50 transition-colors"
+              className="gov-btn-primary w-full h-11 text-sm font-bold mt-2"
             >
-              {isLoading ? 'Sending OTP…' : 'Send OTP'}
+              {isLoading && <Loader2 size={16} className="animate-spin" />}
+              {isLoading ? 'Requesting OTP…' : 'Transmit OTP Code'}
             </button>
           </form>
         )}
 
         {step === 'reset' && (
           <form onSubmit={handleReset} className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-              <p className="text-xs font-semibold text-blue-700 leading-relaxed">
-                An OTP has been sent to <span className="font-bold">{email}</span>. Please enter it below along with your new password to reset.
+            <div className="bg-[#1A3A6B]/5 border border-[#1A3A6B]/15 rounded-xl p-3.5">
+              <p className="text-xs font-semibold text-[#1A3A6B] leading-relaxed">
+                An OTP has been dispatched to <span className="font-bold">{email}</span>. Please verify the code and set your new passcode.
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">OTP Code</label>
+              <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">OTP Code</label>
               <input
                 type="text"
                 required
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                className={inputClass}
-                placeholder="Enter 6-digit OTP"
+                className="gov-input"
+                placeholder="000000"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+              <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">New Password</label>
               <input
                 type="password"
                 required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className={inputClass}
+                className="gov-input"
                 placeholder="Minimum 8 characters"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
-              </label>
+              <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">Confirm New Password</label>
               <input
                 type="password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className={inputClass}
-                placeholder="Repeat password"
+                className="gov-input"
+                placeholder="Repeat new password"
               />
             </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 px-4 text-sm font-semibold rounded-md text-white bg-civic-blue hover:bg-blue-800 disabled:opacity-50 transition-colors"
+              className="gov-btn-primary w-full h-11 text-sm font-bold mt-2"
             >
-              {isLoading ? 'Resetting Password…' : 'Reset Password'}
+              {isLoading && <Loader2 size={16} className="animate-spin" />}
+              {isLoading ? 'Resetting Passcode…' : 'Update Credentials'}
             </button>
           </form>
         )}
 
         {step === 'done' && (
           <div className="space-y-4 text-center">
-            <div className="bg-green-50 border border-green-200 text-green-700 text-sm p-3 rounded-md">
-              Password reset successfully!
+            <div className="bg-green-50 border border-green-200 text-[#0F7B6C] text-sm p-4 rounded-xl font-bold">
+              Passcode updated successfully!
             </div>
             <Link
               to="/login"
-              className="block text-sm font-semibold text-civic-blue hover:text-blue-700"
+              className="gov-btn-primary w-full h-11 text-sm font-bold"
             >
               Back to Login
             </Link>
@@ -157,12 +161,12 @@ const ForgotPassword = () => {
         )}
 
         {step !== 'done' && (
-          <div className="text-center">
+          <div className="text-center pt-2">
             <Link
               to="/login"
-              className="text-sm font-medium text-civic-blue hover:text-blue-700"
+              className="text-xs font-bold text-[#1A3A6B] hover:underline"
             >
-              Back to login
+              Cancel and go back
             </Link>
           </div>
         )}
@@ -170,6 +174,5 @@ const ForgotPassword = () => {
     </div>
   );
 };
-
 
 export default ForgotPassword;

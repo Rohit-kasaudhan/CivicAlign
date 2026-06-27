@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Loader2, SlidersHorizontal, X } from 'lucide-react';
+import { Loader2, SlidersHorizontal, MapPin } from 'lucide-react';
 import { getMapData } from '../../api/complaints';
 import IssueMap from '../../components/map/IssueMap';
 import { CATEGORIES } from '../../utils/constants';
@@ -16,25 +16,27 @@ const tEn = (key) => {
 };
 
 const PRIORITY_COLORS = {
-  critical: '#dc2626',
-  high:     '#ea580c',
-  medium:   '#ca8a04',
-  low:      '#16a34a',
+  critical: '#C0392B', // Danger Red
+  high:     '#E67E22', // Orange
+  medium:   '#F1C40F', // Yellow
+  low:      '#2ECC71', // Emerald Green
 };
 
 const Legend = ({ t }) => (
-  <div>
-    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{t('priority_legend')}</p>
-    <div className="space-y-1.5">
-      {Object.entries(PRIORITY_COLORS).map(([key, color]) => (
-        <div key={key} className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
-          <span className="text-sm text-gray-700">{translatePriority(t, key)}</span>
+  <div className="space-y-3">
+    <div>
+      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Priority Levels</p>
+      <div className="space-y-2">
+        {Object.entries(PRIORITY_COLORS).map(([key, color]) => (
+          <div key={key} className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: color }} />
+            <span className="text-xs font-semibold text-gray-700 capitalize">{translatePriority(t, key)}</span>
+          </div>
+        ))}
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-[#0F7B6C]" />
+          <span className="text-xs font-semibold text-gray-700">Resolved / Closed</span>
         </div>
-      ))}
-      <div className="flex items-center gap-2">
-        <span className="w-3 h-3 rounded-full flex-shrink-0 bg-[#16a34a]" />
-        <span className="text-sm text-gray-700">{t('resolved_closed')}</span>
       </div>
     </div>
   </div>
@@ -66,17 +68,24 @@ const AdminMap = () => {
   const hasFilters = filterCat || filterPriority || filterStatus;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-160px)] gap-4">
-      {/* Toolbar */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-4 py-3 flex flex-wrap items-center gap-3 z-10">
-        <h1 className="text-lg font-bold text-gray-800 mr-2">Admin Map View</h1>
-        <span className="text-xs text-gray-400">Showing {filtered.length} of {allIssues.length} issues</span>
+    <div className="flex flex-col h-[calc(100vh-10rem)] gap-4 page-fade">
+      {/* Header and Toolbar Toolbar */}
+      <div className="bg-white border border-[#DDE3ED] rounded-xl shadow-sm px-5 py-3.5 flex flex-wrap items-center justify-between gap-4 z-10">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-lg bg-[#1A3A6B]/5">
+            <MapPin className="text-[#1A3A6B]" size={18} />
+          </div>
+          <div>
+            <h1 className="text-base font-extrabold text-gray-800 leading-none font-poppins">Admin Map View</h1>
+            <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Geographic master board</p>
+          </div>
+        </div>
 
-        <div className="flex flex-wrap gap-2 ml-auto items-center">
+        <div className="flex flex-wrap gap-2.5 items-center">
           <select
             value={filterCat}
             onChange={(e) => setFilterCat(e.target.value)}
-            className="border border-gray-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#1e40af]"
+            className="gov-input !py-1.5 !px-2.5 !text-xs w-40"
           >
             <option value="">{t('all_categories')}</option>
             {CATEGORIES.map((c) => <option key={c} value={c}>{translateCategory(t, c)}</option>)}
@@ -85,7 +94,7 @@ const AdminMap = () => {
           <select
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value)}
-            className="border border-gray-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#1e40af]"
+            className="gov-input !py-1.5 !px-2.5 !text-xs w-36"
           >
             <option value="">{t('all_priorities')}</option>
             {['critical','high','medium','low'].map((p) => (
@@ -96,7 +105,7 @@ const AdminMap = () => {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="border border-gray-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#1e40af]"
+            className="gov-input !py-1.5 !px-2.5 !text-xs w-36"
           >
             <option value="">{t('all_statuses')}</option>
             {['submitted','ai_processed','community_verified','under_review','in_progress','resolved','closed'].map((s) => (
@@ -107,42 +116,49 @@ const AdminMap = () => {
           {hasFilters && (
             <button
               onClick={() => { setFilterCat(''); setFilterPriority(''); setFilterStatus(''); }}
-              className="flex items-center gap-1 text-xs text-red-500 hover:underline font-medium"
+              className="text-xs text-[#C0392B] font-bold hover:underline px-1 py-1"
             >
-              <X size={12} /> {t('clear')}
+              Reset
             </button>
           )}
 
           <button
             onClick={() => setPanelOpen((o) => !o)}
-            className={`flex items-center gap-1 px-2 py-1.5 border rounded-lg text-xs font-medium transition-colors
-              ${panelOpen ? 'bg-[#1e40af] border-[#1e40af] text-white' : 'bg-white border-gray-300 text-gray-600 hover:border-[#1e40af]'}`}
+            className={`flex items-center gap-1.5 px-3 py-2 border rounded-lg text-xs font-bold transition-all
+              ${panelOpen ? 'bg-[#1A3A6B]/5 border-[#1A3A6B] text-[#1A3A6B]' : 'bg-white border-[#DDE3ED] text-[#5A6A7A] hover:bg-gray-50'}`}
           >
-            <SlidersHorizontal size={12} /> {t('priority_legend')}
+            <SlidersHorizontal size={13} /> Legend
           </button>
         </div>
       </div>
 
-      {/* Map area + optional legend panel */}
-      <div className="flex flex-1 relative overflow-hidden">
+      {/* Map area + floating panel */}
+      <div className="flex-1 relative overflow-hidden rounded-xl border border-[#DDE3ED] shadow-inner bg-gray-50">
         {loading ? (
-          <div className="flex-1 flex items-center justify-center text-gray-400">
-            <Loader2 className="animate-spin mr-2" /> {t('loading_map')}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 gap-2.5">
+            <Loader2 className="animate-spin text-[#1A3A6B]" size={24} />
+            <span className="text-sm font-semibold">Loading map data…</span>
           </div>
         ) : (
-          <div className="flex-1">
+          <div className="w-full h-full">
             <IssueMap complaints={filtered} height="100%" fitBounds={true} isAdmin={true} />
           </div>
         )}
 
-        {/* Floating legend panel */}
-        {panelOpen && (
-          <div className="absolute top-3 right-3 z-[400] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4 w-44">
+        {/* Floating panel */}
+        {!loading && panelOpen && (
+          <div className="absolute top-4 right-4 z-[400] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4 w-48 space-y-4">
             <Legend t={t} />
-            <div className="mt-4 pt-3 border-t border-gray-100">
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{t('stats')}</p>
-              <p className="text-xs text-gray-600">{t('total')}: <strong>{allIssues.length}</strong></p>
-              <p className="text-xs text-gray-600">{t('filtered')}: <strong>{filtered.length}</strong></p>
+            <div className="pt-3 border-t border-gray-150">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Map Statistics</p>
+              <div className="flex justify-between text-xs font-semibold text-gray-600">
+                <span>Total Pinned:</span>
+                <span className="text-gray-800 font-extrabold">{allIssues.length}</span>
+              </div>
+              <div className="flex justify-between text-xs font-semibold text-gray-600 mt-1">
+                <span>Matches:</span>
+                <span className="text-gray-800 font-extrabold">{filtered.length}</span>
+              </div>
             </div>
           </div>
         )}

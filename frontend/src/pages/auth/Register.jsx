@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { ShieldCheck, CheckCircle2, ArrowRight, Loader2, Info } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { registerUser } from '../../api/auth';
 
@@ -19,9 +20,6 @@ const getStrength = (password) => {
   ];
   return { score, ...levels[score] };
 };
-
-const inputClass =
-  'block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-civic-blue focus:border-transparent';
 
 const Register = () => {
   const { login } = useAuth();
@@ -79,156 +77,232 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full bg-white p-8 rounded-xl shadow border border-gray-200 space-y-6">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-civic-blue hover:text-blue-700">
-              Sign in
-            </Link>
-          </p>
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12 page-fade">
+      
+      {/* Left panel: Info screen */}
+      <div className="hidden lg:flex lg:col-span-5 bg-[#1A3A6B] flex-col justify-between p-12 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15,123,108,0.25),transparent_45%)]" />
+        
+        {/* Top: Logo */}
+        <div className="flex items-center gap-2.5 z-10">
+          <ShieldCheck size={28} className="text-[#F5A623]" />
+          <div>
+            <span className="text-2xl font-extrabold tracking-tight font-poppins text-white">Civic</span>
+            <span className="text-2xl font-extrabold tracking-tight font-poppins text-blue-300">Align</span>
+          </div>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-md">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Center: Highlights */}
+        <div className="space-y-8 z-10 my-auto">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-            <input
-              name="full_name"
-              type="text"
-              required
-              value={form.full_name}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="Jane Doe"
-            />
+            <h1 className="text-3xl font-extrabold tracking-tight leading-tight font-poppins">
+              Join Our Civic Network
+            </h1>
+            <p className="text-slate-300 mt-2 text-sm leading-relaxed">
+              Create a citizen account to report complaints, audit agent traces, earn civic points, and help shape local development initiatives.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-              <input
-                name="email"
-                type="email"
-                required
-                value={form.email}
-                onChange={handleChange}
-                className={inputClass}
-                placeholder="jane@example.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input
-                name="phone"
-                type="tel"
-                value={form.phone}
-                onChange={handleChange}
-                className={inputClass}
-                placeholder="+91 98765 43210"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
-            <input
-              name="password"
-              type="password"
-              required
-              value={form.password}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="Minimum 8 characters"
-            />
-            {form.password && (
-              <div className="mt-2">
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className={`h-1 flex-1 rounded transition-colors ${
-                        i <= strength.score ? strength.color : 'bg-gray-200'
-                      }`}
-                    />
-                  ))}
+          <div className="space-y-4">
+            {[
+              {
+                title: 'AI-Audited Evidence Verification',
+                desc: 'Upload images to analyze issue severity, trust status, and geographical coordinates automatically.',
+              },
+              {
+                title: 'Multi-Agent Reasoning Trace',
+                desc: 'Inspect background actions and planning audits generated by specialized AI agents transparently.',
+              },
+              {
+                title: 'Civic Leaderboard & Initiatives',
+                desc: 'Earn civic points, unlock rewards badges, and cluster local complaints into coordinated development plans.',
+              },
+            ].map((item, idx) => (
+              <div key={idx} className="flex gap-3">
+                <CheckCircle2 size={18} className="text-[#0F7B6C] shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-bold text-sm text-white">{item.title}</h3>
+                  <p className="text-slate-300 text-xs mt-1 leading-relaxed">{item.desc}</p>
                 </div>
-                {strength.label && (
-                  <p className="text-xs mt-1 text-gray-500">
-                    Strength: <span className="font-medium">{strength.label}</span>
-                  </p>
-                )}
               </div>
-            )}
+            ))}
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password *
-            </label>
-            <input
-              name="confirm_password"
-              type="password"
-              required
-              value={form.confirm_password}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="Repeat password"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-              <input
-                name="country"
-                type="text"
-                value={form.country}
-                onChange={handleChange}
-                className={inputClass}
-                placeholder="India"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
-              <input
-                name="state"
-                type="text"
-                value={form.state}
-                onChange={handleChange}
-                className={inputClass}
-                placeholder="Maharashtra"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-              <input
-                name="city"
-                type="text"
-                value={form.city}
-                onChange={handleChange}
-                className={inputClass}
-                placeholder="Mumbai"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-semibold rounded-md text-white bg-civic-blue hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLoading ? 'Creating account…' : 'Create account'}
-          </button>
-        </form>
+        {/* Bottom */}
+        <div className="z-10 text-slate-400 text-xs flex items-center gap-1.5 font-semibold uppercase tracking-wider">
+          <span>© {new Date().getFullYear()} CivicAlign. All rights reserved.</span>
+        </div>
       </div>
+
+      {/* Right panel: Form container */}
+      <div className="col-span-12 lg:col-span-7 flex items-center justify-center p-6 sm:p-12 bg-[#F4F6FA] overflow-y-auto">
+        <div className="max-w-lg w-full bg-white p-8 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-gray-100 space-y-6 my-8">
+          
+          {/* Header */}
+          <div className="text-center">
+            <h2 className="text-2xl font-extrabold text-[#1A1A2E] font-poppins">Create Citizen Account</h2>
+            <p className="mt-2 text-sm text-[#5A6A7A]">
+              Already have an account?{' '}
+              <Link to="/login" className="font-bold text-[#1A3A6B] hover:underline">
+                Sign in here
+              </Link>
+            </p>
+          </div>
+
+          {/* Alert box */}
+          <div className="bg-[#0F7B6C]/5 border border-[#0F7B6C]/25 text-[#0F7B6C] rounded-xl p-3.5 flex items-start gap-2.5 text-xs">
+            <Info size={16} className="shrink-0 mt-0.5 text-[#0F7B6C]" />
+            <div>
+              <strong>Note:</strong> You will join as a <strong>Citizen</strong>. Administrator registration is by private invitation only.
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-[#C0392B] text-sm px-4 py-3 rounded-xl font-medium">
+              {error}
+            </div>
+          )}
+
+          {/* Registration Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">Full Name *</label>
+              <input
+                name="full_name"
+                type="text"
+                required
+                value={form.full_name}
+                onChange={handleChange}
+                className="gov-input"
+                placeholder="Jane Doe"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">Email Address *</label>
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  value={form.email}
+                  onChange={handleChange}
+                  className="gov-input"
+                  placeholder="jane@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">Phone Number</label>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={form.phone}
+                  onChange={handleChange}
+                  className="gov-input"
+                  placeholder="+91 98765 43210"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">Password *</label>
+              <input
+                name="password"
+                type="password"
+                required
+                value={form.password}
+                onChange={handleChange}
+                className="gov-input"
+                placeholder="Minimum 8 characters"
+              />
+              
+              {/* Strength Meter */}
+              {form.password && (
+                <div className="mt-2 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                  <div className="flex gap-1.5">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className={`h-1.5 flex-1 rounded transition-colors ${
+                          i <= strength.score ? strength.color : 'bg-gray-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  {strength.label && (
+                    <p className="text-[10px] mt-1.5 text-gray-500 font-bold uppercase tracking-wider">
+                      Strength: <span className="text-[#1A1A2E]">{strength.label}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#5A6A7A] uppercase tracking-wider mb-1.5">Confirm Password *</label>
+              <input
+                name="confirm_password"
+                type="password"
+                required
+                value={form.confirm_password}
+                onChange={handleChange}
+                className="gov-input"
+                placeholder="Repeat password"
+              />
+            </div>
+
+            {/* Geo Fields Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50/50 p-4 rounded-xl border border-[#DDE3ED] mt-2">
+              <div>
+                <label className="block text-[10px] font-bold text-[#5A6A7A] uppercase tracking-wider mb-1">Country</label>
+                <input
+                  name="country"
+                  type="text"
+                  value={form.country}
+                  onChange={handleChange}
+                  className="gov-input !py-1.5"
+                  placeholder="India"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-[#5A6A7A] uppercase tracking-wider mb-1">State</label>
+                <input
+                  name="state"
+                  type="text"
+                  value={form.state}
+                  onChange={handleChange}
+                  className="gov-input !py-1.5"
+                  placeholder="Maharashtra"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-[#5A6A7A] uppercase tracking-wider mb-1">City</label>
+                <input
+                  name="city"
+                  type="text"
+                  value={form.city}
+                  onChange={handleChange}
+                  className="gov-input !py-1.5"
+                  placeholder="Mumbai"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="gov-btn-primary w-full h-11 text-sm font-bold mt-2"
+            >
+              {isLoading && <Loader2 size={16} className="animate-spin" />}
+              {isLoading ? 'Creating Account…' : 'Register and Join Portal'}
+            </button>
+          </form>
+
+        </div>
+      </div>
+
     </div>
   );
 };
