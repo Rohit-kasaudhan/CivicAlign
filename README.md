@@ -1,5 +1,5 @@
 # CivicAlign 🏛️🤖
-### *AI-Powered Community Development & Grievance Priority Platform*
+### *A Platform Where Citizens and AI Unite to Turn Community Challenges into Lasting Progress*
 
 CivicAlign is a government-grade, citizen-centric platform that connects community members with local administrations. By leveraging a multi-agent AI reasoning pipeline powered by **Google Gemini**, CivicAlign converts unstructured, fragmented citizen complaints (potholes, garbage piling, water leaks, etc.) into structured, prioritized municipal development plans and long-term master roadmaps.
 
